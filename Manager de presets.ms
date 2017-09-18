@@ -19,7 +19,7 @@ include "$userScripts\cp - GLOBAL\Debuger et ecrire.ms"
 struct str_presetsMGR (
 	
 	------------ DEBUG	----------------------------------------------------------------------------------
-	m_debug = true,
+	m_debug = false,
 	m_dbgPrefix ="presetsMGR",
 	fn debug 	_txt  var:	 param:    =(
 		try if m_debug do ::debuger 	_txt  	var:var	 param:param	prefix:m_dbgPrefix
@@ -45,13 +45,74 @@ struct str_presetsMGR (
 	---------------------------------------------------------------------------------------------------------------
 	------------  Fonctions	-----------------------------------------------------------------------------------
 	---------------------------------------------------------------------------------------------------------------
+		
+	----- Accessions diverses -------------------------------------------------------------------------------------------
+	public
+		fn get 											= 	presets,
+		fn get_preset					_id			= 	if _id >0 and _id <= presets.count then	presets[_id]	else undefined,
+		fn get_parIdUnique			_idUnique	= (
+			local result
+			for preset in presets do
+				if preset.idUnique == _idUnique do
+					result = preset
+			result
+		),
+		fn set_idUniqueCourant 	_id 			=	idUniqueCourant = _id,
+		fn get_idUniqueCourant 					= 	idUniqueCourant,
+		fn trouver_ID		_preset					= (
+			findItem	presets _preset
+		),
+		
+		
+		
+		
+	----- Gestion du fichier -------------------------------------------------------------------------------------------
 	private
+		fn convertTabToString		_tab =(
+			local txt = "#("
+			for  i = 1 to _tab.count do (
+				local item = "\"" + _tab[i] as string + "\"" 
+				txt += item 
+				if i != _tab.count do txt += ", "
+			)
+			txt += ")" 
+			txt
+		),
+		
+		
+		
+		fn ecrire_params =(
+			
+			--- Sauvegarde de la liste des parametres du mgr ------------
+			local lstDesPresets = #()
+			for preset in presets do append lstDesPresets	preset.idUnique
+			setINISetting   fichier	(prefixUnique +"_params" )	"idUniqueCourant"		( idUniqueCourant as string)
+			setINISetting	fichier	(prefixUnique +"_params" )	"listeDesPresets"		( convertTabToString	lstDesPresets  )
+			
+		),
+			
 		fn ecrire_preset  		_preset  	=(
 			
+			--- Ecriture du preset ------------
 			local proprietesPreset 	= getPropNames  _preset
 			
 			for propNom in proprietesPreset do (
-				setINISetting   fichier		_preset.idUnique	   propNom  	( ( getProperty _preset		 propNom	)	as string )
+				
+				local propriete =  ( getProperty _preset		 propNom	)	
+				
+				debug "ecrire_preset"				
+				debug "propriete"		var:propriete
+				debug "classof propriete "		var:(classof propriete )
+				
+					
+				--- si c'est un tableau on le reecris nous meme -----
+				if classof propriete == array do 
+					propriete = convertTabToString	propriete
+					
+				
+				
+				setINISetting   fichier		_preset.idUnique	   propNom  	( propriete as string )
+				
 			)
 		),
 		
@@ -66,13 +127,33 @@ struct str_presetsMGR (
 				local propFichier 	= getINISetting   	fichier		_idPreset   propNom 
 				
 				local propType 	= classof ( getProperty 	nvPreset	 propNom )
+				
+				debug "propNom" var:propNom
+				debug "propType" var:propType
+				
 				case propType of (
 					Integer:			setProperty 	nvPreset 	propNom		( propFichier	as integer )
 					Float:			setProperty 	nvPreset 	propNom		( propFichier	as float )
 					BooleanClass:	setProperty 	nvPreset 	propNom		( if propFichier == "true" then true else false )
 					Point2:			setProperty 	nvPreset 	propNom		( execute propFichier )
 					Color:			setProperty 	nvPreset 	propNom		( execute propFichier )
-					Array:			setProperty 	nvPreset 	propNom		( execute propFichier )
+					Array:			(
+						local tabTmp = execute propFichier
+						local tabTmpResult = #()
+						debug "	tabTmp	1	" var:tabTmp
+						for item in tabTmp do ( 
+								debug "	item	1	" var:item
+							
+								if  (  execute item ) != undefined then
+									append tabTmpResult (  execute item )
+								else
+									append tabTmpResult (  item )
+								debug "	item	2	" var:(  execute item )
+						)
+				debug "	tabTmp	2	" var:tabTmpResult
+						setProperty 	nvPreset 	propNom		tabTmpResult
+					)
+					
 					Default:			setProperty 	nvPreset 	propNom		propFichier
 				) 
 			)
@@ -81,26 +162,19 @@ struct str_presetsMGR (
 			
 		),
 		
-	----- Accessions diverses -------------------------------------------------------------------------------------------
+
+		
+		
+		
+		
 	public
-		fn get 										= 	presets,
-		fn get_preset					_id		= 	if _id >0 and _id < presets.count then	presets[_id]	else undefined,
-		fn set_idUniqueCourant 	_id 		=	idUniqueCourant = _id,
-		fn get_idUniqueCourant 				= 	idUniqueCourant,
-		fn trouver_ID		_preset				= (
-			findItem	presets _preset
+		fn sauvegarder			_preset	= (
+			ecrire_params ()
+			ecrire_preset 	_preset
 		),
-		
-		
-		
-		
-	----- Gestion du fichier -------------------------------------------------------------------------------------------
-	public
-		fn sauvegarder			_preset	= ecrire_preset 	_preset,
 		fn sauvegarder_tout					=(
 			
-			--- la valeur de l'idUnique ----
-			setINISetting   fichier		(prefixUnique + "idUniqueCourant")	"val"	( idUniqueCourant as string)
+			ecrire_params ()
 			
 			--- les presets ----
 			for preset in presets do
@@ -114,32 +188,29 @@ struct str_presetsMGR (
 			
 			---- si existe pas on initialise le fichier ----
 			if not doesFileExist fichier then (
-				debug "fichier absent, création du fichier"		var:fichier
+				
+				debug "fichier des Presets absent, création du fichier"		var:fichier
 				sauvegarder_tout ()
 				
 			---- sinon on charge ----
 			) else (
 				
-				---- id unique ------
-				set_idUniqueCourant 		( ( getINISetting   fichier	(prefixUnique + "idUniqueCourant")		"val"	)	as integer )
+				debug "fichier des Presets trouvé, chargement du fichier"		var:fichier
+				
+				if not hasINISetting fichier	(prefixUnique +"_params" ) do
+					ecrire_params ()	
+					
+				---- parametres globaux ---
+				set_idUniqueCourant 		( ( getINISetting   fichier	(prefixUnique +"_params" ) "idUniqueCourant"	)	as integer )
 				
 				---- charger les presets -------
-				local finDeLecture = false
-				idUniquePreset_lecture	 = 1
-				while not finDeLecture do (
-					
-					local nom_idPreset = (prefixUnique + "_" +   idUniquePreset_lecture as string )
-					
-					if hasINISetting fichier	nom_idPreset		then (
+				local listeDesPresets = execute ( getINISetting	fichier	(prefixUnique +"_params" )	"listeDesPresets"	) 
+				
+				
+				for presetID in listeDesPresets do 					
+					if hasINISetting fichier	presetID		do						
+						append presets ( lire_preset  presetID )
 						
-						local nvPreset = 	lire_preset  nom_idPreset
-						append presets nvPreset
-						
-						idUniquePreset_lecture +=1
-						
-					)	else	finDeLecture = true
-					
-				)
 			)
 		),
 		
@@ -148,11 +219,25 @@ struct str_presetsMGR (
 		
 	----- Creations,  suppression ....-------------------------------------------------------------------------------------------		
 	public
-		fn ajouter 	nvPreset	= (
+		fn ajouter 		nvPreset	= (
 			append presets nvPreset
 			nvPreset
 		),
-		
+		fn supprimer 	_id	= (
+			delIniSetting  fichier		presets[_id].idUnique
+			deleteItem  presets 	_id
+		),
+		fn supprimer_preset		_preset	= (
+			
+			local ID_aSuppr = findItem		presets	_preset
+			if ID_aSuppr != 0 do supprimer 	ID_aSuppr
+			
+		),
+		fn supprimer_parIdUnique	_idUnique	= (
+			local presetASppr = get_parIdUnique 	_idUnique
+			supprimer_preset	presetASppr
+		),
+
 		fn creer_preset = (
 			
 			idUniqueCourant += 1
@@ -160,10 +245,12 @@ struct str_presetsMGR (
 			local  nvPreset	= preset_type 	idUnique:( prefixUnique + "_" + idUniqueCourant as string )
 			append presets 	nvPreset
 			
+			sauvegarder nvPreset
+			
 			nvPreset
 		),
-		fn supprimer_preset 		_preset = (),
--- 		fn vider 					=	presets 	=#()	,
+		
+		
 		
 		
 		
@@ -177,16 +264,16 @@ struct str_presetsMGR (
 			---- Erreurs d'initialisation -----
 			if preset_type == undefined or fichier == "" or prefixUnique == ""	do ( 
 				
-				format 	"\n	****	ERREUR INITIALISATION STRUCT : \"str_presetsMGR ()\"	****\n"
+				format 	"\n	****	/!\	ERREUR INITIALISATION STRUCT : \"str_presetsMGR ()\"		/!\		****\n"
 				
 				if preset_type == undefined do 
-					format 	"	****	\"preset_type\" doit etre initialiser à la création. 	****\n"
+					format 	"	****		\"preset_type\" doit etre initialiser à la création. 				****\n"
 				
 				if fichier == "" do 
-					format 	"	****	\"fichier\" doit etre initialiser à la création. 		****\n\n"
+					format 	"	****		\"fichier\" doit etre initialiser à la création. 					****\n"
 				
 				if prefixUnique == "" do 
-					format 	"	****	\"prefixUnique\" doit etre initialiser à la création. 		****\n\n"
+					format 	"	****		\"prefixUnique\" doit etre initialiser à la création. 			****\n\n"
 			)
 		)
 		
@@ -198,7 +285,7 @@ struct str_presetsMGR (
 
 
 
-
+popo = str_presetsMGR ()
 
 
 

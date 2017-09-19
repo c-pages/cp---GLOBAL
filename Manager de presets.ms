@@ -51,10 +51,16 @@ struct str_presetsMGR (
 		fn get 											= 	presets,
 		fn get_preset					_id			= 	if _id >0 and _id <= presets.count then	presets[_id]	else undefined,
 		fn get_parIdUnique			_idUnique	= (
+-- 			debug	"get_parIdUnique"
+-- 			debug	"_idUnique" var:_idUnique
+-- 			debug	"presets" var:presets
 			local result
-			for preset in presets do
+			for preset in presets do (
+				
+-- 				debug	"	preset.idUnique" var: preset.idUnique
 				if preset.idUnique == _idUnique do
 					result = preset
+			)
 			result
 		),
 		fn set_idUniqueCourant 	_id 			=	idUniqueCourant = _id,
@@ -223,19 +229,31 @@ struct str_presetsMGR (
 			append presets nvPreset
 			nvPreset
 		),
+		
 		fn supprimer 	_id	= (
+			debug "supprimer"
+			debug "_id" var:_id
 			delIniSetting  fichier		presets[_id].idUnique
 			deleteItem  presets 	_id
+			ecrire_params ()
 		),
+		
+		
 		fn supprimer_preset		_preset	= (
 			
+			debug "supprimer_preset" 
+			debug "_preset" var:_preset
 			local ID_aSuppr = findItem		presets	_preset
+			debug "ID_aSuppr" var:ID_aSuppr
 			if ID_aSuppr != 0 do supprimer 	ID_aSuppr
 			
 		),
 		fn supprimer_parIdUnique	_idUnique	= (
+			debug "supprimer_preset" 
+			debug "_idUnique" var:_idUnique
 			local presetASppr = get_parIdUnique 	_idUnique
-			supprimer_preset	presetASppr
+			debug "presetASppr" var:presetASppr
+			supprimer_preset		presetASppr
 		),
 
 		fn creer_preset = (

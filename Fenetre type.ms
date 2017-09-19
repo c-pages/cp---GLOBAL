@@ -6,13 +6,13 @@
 	FENETRE TYPE	( sert de model de base, n'est pas importé dans le script )	
 	sans barre de titre, draggable et bouton fermer
 	
-	Remplacer (ctr + h): 'urba_ville' par:  'maFenetreAMoi'.
+	Remplacer (ctr + h): 'fenetre_type' par:  'maFenetreAMoi'.
 	il y a des parties a decommenter :"--- a décommenter ---"
 	Noms des variables 
-	-	roll_urba_ville :			le nom de la fenetre
-	-	urba_ville_pos :			le parametre des prefs stockant la pos de la fenetre
-	-	urba_ville_estOuvert :	le nom du parametre ouvert dans les preferences ( labib.prefs.fenetre. ' urba_villeOuvert )
-	-	str_urba_ville:			le nom de la struicture de controle de la fenetre
+	-	roll_fenetre_type :			le nom de la fenetre
+	-	fenetre_type_pos :			le parametre des prefs stockant la pos de la fenetre
+	-	fenetre_type_estOuvert :	le nom du parametre ouvert dans les preferences ( labib.prefs.fenetre. ' fenetre_typeOuvert )
+	-	str_fenetre_type:			le nom de la struicture de controle de la fenetre
 	
 ##########################################################################################################################
 
@@ -41,7 +41,7 @@ include "$userScripts\cp - GLOBAL\DragDialog.ms"
 ------------------------------------------------------------------------------
 ----------	Fenetre								 -------------------------
 ------------------------------------------------------------------------------
-rollout roll_urba_ville "urba_ville" width:200 height:200
+rollout roll_fenetre_type "fenetre_type" width:200 height:200
 (
 	------------  Membres	----------------------------------------------------------------------------------
 	---- Pointeurs ----
@@ -57,7 +57,7 @@ rollout roll_urba_ville "urba_ville" width:200 height:200
 	
 	------------  UI	----------------------------------------------------------------------------------		
 	---- le bouton pour fermer la fenetre ----
-	ImgTag 'ui_btnFermer' "X" pos:[roll_urba_ville.width - 20,0] width:20 height:20 toolTip:"Fermer" style:#bmp_center align:#left
+	ImgTag 'ui_btnFermer' "X" pos:[roll_fenetre_type.width - 20,0] width:20 height:20 toolTip:"Fermer" style:#bmp_center align:#left
 	
 	ImgTag 'ui_titre' "" pos:[8,4] width:66 height:18 align:#left
 -- 	ImgTag 'ui_log' "" pos:[8,43] width:66 height:18 align:#left
@@ -81,7 +81,7 @@ rollout roll_urba_ville "urba_ville" width:200 height:200
 	---- Initialisation de la fenetre  -----
 	fn initialiser = (
 		
-		m_drag 		= str_drag 	m_prt:roll_urba_ville		
+		m_drag 		= str_drag 	m_prt:roll_fenetre_type		
 		
 		m_titre 		= str_label 	m_ui:ui_titre			m_texte:"Urba | Ville"
 		m_titre.setCouleur (color 255	255	255)
@@ -101,11 +101,11 @@ rollout roll_urba_ville "urba_ville" width:200 height:200
 	
 	------------  Evenements	----------------------------------------------------------------------------------
 	---- Drag ----
-	on roll_urba_ville lbuttondown _pos 	do
+	on roll_fenetre_type lbuttondown _pos 	do
 		m_drag.demarrer ()
-	on roll_urba_ville lbuttonup _pos 	do
+	on roll_fenetre_type lbuttonup _pos 	do
 		m_drag.arreter ()
-	on roll_urba_ville mouseMove _pos 	do
+	on roll_fenetre_type mouseMove _pos 	do
 		m_drag.suivreSouris ()
 	
 	---- Fermer ----
@@ -125,12 +125,12 @@ rollout roll_urba_ville "urba_ville" width:200 height:200
 ------------------------------------------------------------------------------
 ----------	Structure								 -------------------------
 ------------------------------------------------------------------------------
-struct str_urba_ville (
+struct str_fenetre_type (
 	
 		------------  Membres	----------------------------------------------------------------------------------
 	public
 		---- pointeurs ----
-		m_dialog				= roll_urba_ville ,		---- le rollout ----
+		m_dialog				= roll_fenetre_type ,		---- le rollout ----
 		m_dialogPos 		= [100,100],
 		
 		col_fenetreFond	= color 68  68 68, 	----  ----
@@ -182,7 +182,7 @@ try
 	destroydialog test.m_dialog 
 catch ()
 
-test = str_urba_ville ()
+test = str_fenetre_type ()
 test.ouvrir ()
 
 

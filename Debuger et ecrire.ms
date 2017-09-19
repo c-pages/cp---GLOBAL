@@ -60,7 +60,7 @@ fn ecrire 		_txt  var:	 param:   = 	(
 		local txtFinal = "<Labib>	"		
 		txtFinal += remplirTexte  _txt  var:var	 param:param
 		format "%\n"	txtFinal
-	) else debug 	_txt  	var:var	 param:param	
+	) else debuger 	_txt  	var:var	 param:param	
 )
 
 ------ OUTPUT	------------------------------------------------------------------------------------------------------------------------------------

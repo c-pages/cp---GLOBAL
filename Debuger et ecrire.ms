@@ -1,9 +1,9 @@
 
 ------ OUTPUTS	------------------------------------------------------------------------------------------------------------------------------------
 
-	
+
 ----- debug ------------------------------
-global debug
+global debug, debuger, ecrire
 DEBUG_MODE = true
 
 fn remplirTexte  _txt  var:	 param:  prefix: = (

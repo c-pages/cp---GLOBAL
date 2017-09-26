@@ -303,7 +303,7 @@ struct str_presetsMGR (
 
 
 
-popo = str_presetsMGR ()
+-- popo = str_presetsMGR ()
 
 
 

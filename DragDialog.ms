@@ -37,6 +37,9 @@ struct str_drag (
 		enCours 				= false
 	),
 	fn suivreSouris 	 	=(
+		
+		setSysCur #move
+		
 		if enCours  do (			
 			local ecart = ( mouse.screenpos  - posOrigineSouris )
 			SetDialogPos  m_prt	( posOrigineFenetre + ecart )

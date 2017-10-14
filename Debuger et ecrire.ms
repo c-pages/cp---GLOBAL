@@ -3,8 +3,8 @@
 
 	
 ----- debug ------------------------------
-global debug
-DEBUG_MODE = true
+global debug, debuger, ecrire
+global DEBUG_MODE = true
 
 fn remplirTexte  _txt  var:	 param:  prefix: = (
 	
@@ -55,9 +55,11 @@ fn debuger	_txt  var:	 param:    prefix: = 	(
 	)
 )		
 ----- output ------------------------------
-fn ecrire 		_txt  var:	 param:   = 	(
+fn ecrire 		_txt  var:	 param:   script:"Labib"	= 	(
 	if not DEBUG_MODE then  (
-		local txtFinal = "<Labib>	"		
+		
+		local txtFinal = "<" + script + ">	"		
+		
 		txtFinal += remplirTexte  _txt  var:var	 param:param
 		format "%\n"	txtFinal
 	) else debuger 	_txt  	var:var	 param:param	

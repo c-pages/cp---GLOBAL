@@ -36,7 +36,7 @@ tooltip:"Save copy (+1)"
 				local source = maxfilepath + maxfilename
 				copyFile 	source 		_file_copy_save
 				
-				savemaxfile source useNewFile:false	clearNeedSaveFlag:false	quiet:true
+				savemaxfile source useNewFile:false	clearNeedSaveFlag:true	quiet:true
 				format "copie du fichier avant sauvegarde : %\n"		_file_copy_save
 			)
 			if existFile 	_file_copy_save 

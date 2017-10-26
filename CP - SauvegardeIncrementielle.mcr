@@ -70,12 +70,10 @@ tooltip:"Save copy (+1)"
 	)
 	if DIR_result == nom_tmp 
 		then savecopy 	( maxfilepath + nom_tmp+ "\\")
-		else 	if querybox "Creer le dossier des copies?"
-				then 	(
+		else 	(
 					DIR_result = maxfilepath + nom_tmp
 					makeDir DIR_result
 					savecopy (DIR_result + "\\")
 				)
-				else		format "action annulé\n"
 
 )

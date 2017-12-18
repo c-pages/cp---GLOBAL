@@ -526,27 +526,56 @@ category:"#CPages"
 --------------------------------------------------------------------------------------------------------------------------------
 macroScript mat_SelectByMat
 category:"#CPages"
-toolTip:"Selectionner les nodes portant le material ouvert dans le SME"
-buttonText:"SelectBy Mat"
+toolTip:"Selectionner les nodes portant le meme material que les objets selectionnés"
+buttonText:"Select Mat"
 (
-	--- le material ouvert dans le SME -----
-	matACharcher = sme.GetMtlInParamEditor ()
 
+	
+	if selection.count >0 then ( 
+		matsACharcher = #()
+		for obj in selection do
+			appendIfUnique matsACharcher 	obj.material
+		
+-- 		matACharcher = selection[1].material
 
-	--- le material ouvert dans le SME -----
-	l_nodes = #()
-	for obj in geometry do (
-		mat = obj.material
-		if mat == matACharcher then 
-			appendIfUnique l_nodes obj
-		else 	if classof mat == Multimaterial then
-					for ssMat in mat do
-						if ssMat == matACharcher do 
-							appendIfUnique l_nodes obj
-					
-		
-		
+		--- le material ouvert dans le SME -----
+		l_nodes = #()
+		for obj in geometry do (
+			mat = obj.material
+			for matACharcher in matsACharcher do (
+				if mat == matACharcher then 
+					appendIfUnique l_nodes obj
+				else 	if classof mat == Multimaterial then
+							for ssMat in mat do
+								if ssMat == matACharcher do 
+									appendIfUnique l_nodes obj
+			)
+			
+			
+		)
+		select l_nodes
 	)
-	select l_nodes
-
+	
 ) --- fin macro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

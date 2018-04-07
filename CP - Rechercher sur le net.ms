@@ -1,4 +1,4 @@
-﻿macroScript RechercherSurNet
+macroScript RechercherSurNet
 category:"#CPages"
 buttonText:"Rechercher"
 toolTip:"Rechercher sur le net."
@@ -9,7 +9,7 @@ toolTip:"Rechercher sur le net."
 		label 'lbl_texture' "Textures :" pos:[5,3] width:52 height:18 align:#left
 		
 		edittext 'edt_model' "" pos:[54,20] width:147 height:15 align:#left
-		label 'lblmodele' "Modèle :" pos:[5,19] width:40 height:18 align:#left
+		label 'lblmodele' "Mod�le :" pos:[5,19] width:40 height:18 align:#left
 		
 
 		edittext 'edt_osm' "" pos:[54,36] width:147 height:15 align:#left
@@ -27,23 +27,27 @@ toolTip:"Rechercher sur le net."
 		
 		fn rechercher_texture mot =(	
 			mot = formaterTexte 	mot
-			command = "ShellLaunch \"Chrome.exe\" @\"https://www.textures.com/search?q=" + mot + "\""
-			execute command
+			DOSCommand 	("start https://www.textures.com/search?q=" + mot + "\"")
+-- 			command = "ShellLaunch \"Chrome.exe\" @\"https://www.textures.com/search?q=" + mot + "\""
+-- 			execute command
 		)
 		fn rechercher_MODEL mot =(		
 			mot = formaterTexte 	mot
-			command = "ShellLaunch \"Chrome.exe\" @\"https://3dsky.org/search?query=" + mot + "\""
-			execute command
+			DOSCommand 	("start https://3dsky.org/search?query=" + mot + "\"")
+-- 			command = "ShellLaunch \"Chrome.exe\" @\"https://3dsky.org/search?query=" + mot + "\""
+-- 			execute command
 		)
 		fn rechercher_OSM mot =(		
 			mot = formaterTexte 	mot
-			command = "ShellLaunch \"Chrome.exe\" @\"https://www.openstreetmap.org/search?query=" + mot + "\""
-			execute command
+			DOSCommand 	("start https://www.openstreetmap.org/search?query=" + mot + "\"")
+-- 			command = "ShellLaunch \"Chrome.exe\" @\"https://www.openstreetmap.org/search?query=" + mot + "\""
+-- 			execute command
 		)
 		fn rechercher_RAL mot =(		
 			mot = formaterTexte 	mot
-			command = "ShellLaunch \"Chrome.exe\" @\"http://rgb.to/ral/" + mot  + "\""
-			execute command
+			DOSCommand 	("start http://rgb.to/ral/" + mot + "\"")
+-- 			command = "ShellLaunch \"Chrome.exe\" @\"http://rgb.to/ral/" + mot  + "\""
+-- 			execute command
 		)
 		
 		

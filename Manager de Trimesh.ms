@@ -79,11 +79,14 @@ struct str_trimeshMgr (
 	)
 	
 )
+
+
+
 /* 
 
 popo = str_trimeshMgr ()
 
-data3D = popo.get_datas $urba_batiment003
+data3D = popo.get_datas $
 
 popo.creer_objet 	data3D
 

@@ -54,16 +54,16 @@ fn debuger	_txt  var:	 param:    prefix: = 	(
 		
 		format "%\n"	txtFinal
 	)
-)		
+)
 ----- output ------------------------------
-fn ecrire 		_txt  var:	 param:   script:"Labib"	= 	(
-	if not DEBUG_MODE then  (
+fn ecrire 		_txt  var:	 param:   script:"CP"	= 	(
+-- 	if not DEBUG_MODE then  (
 		
 		local txtFinal = "<" + script + ">	"		
 		
 		txtFinal += remplirTexte  _txt  var:var	 param:param
 		format "%\n"	txtFinal
-	) else debuger 	_txt  	var:var	 param:param	
+-- 	) else debuger 	_txt  	var:var	 param:param	
 )
 
 ------ OUTPUT	------------------------------------------------------------------------------------------------------------------------------------
